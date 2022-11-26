@@ -1,0 +1,100 @@
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.android.application'
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.trade.upstox"
+        minSdk 21
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    composeOptions {
+        kotlinCompilerVersion "1.5.10"
+        kotlinCompilerExtensionVersion "1.3.0"
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    packagingOptions {
+        // These packaging options are required to avoid conflicts in test
+        // code (for instrumented tests) which brings in some low-level
+        // libraries which have some collisions.
+
+        // for JNA and JNA-platform
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+
+        // for byte-buddy
+        exclude "META-INF/licenses/ASM"
+        pickFirst "win32-x86-64/attach_hotspot_windows.dll"
+        pickFirst "win32-x86/attach_hotspot_windows.dll"
+    }
+}
+
+dependencies {
+    implementation lib.androidx.kotlin_core
+    implementation lib.androidx.appcompat
+    implementation lib.androidx.activity_ktx
+
+    implementation lib.hilt.android
+    kapt lib.hilt.compiler
+
+    implementation lib.retrofit.main
+    implementation lib.retrofit.converter_gson
+
+    implementation lib.coroutines.coroutine_core
+    implementation lib.coroutines.coroutine_android
+    implementation lib.androidx.lifecycle_viewmodel
+    implementation lib.androidx.lifecycle_runtime
+
+    // Compose
+    implementation lib.androidx.compose_material
+    implementation lib.androidx.compose_activity
+    implementation lib.androidx.compose_ui_core
+    implementation lib.androidx.lifecycle_runtime
+    implementation lib.androidx.compose_tooling_preview
+    implementation lib.androidx.hilt_navigation
+
+    //test
+    androidTestImplementation lib.test.junit
+    androidTestImplementation lib.test.core_testing
+    androidTestImplementation lib.test.mockito_kotlin
+    testImplementation lib.test.mockito_kotlin
+    androidTestImplementation lib.test.coroutines_test
+    androidTestImplementation "androidx.test:runner:1.4.0"
+
+    testImplementation lib.test.core_testing
+    testImplementation lib.test.coroutines_test
+    androidTestImplementation lib.test.test_runner
+    testImplementation lib.test.mockk
+    testImplementation lib.test.compose_junit
+
+
+
+    implementation project(path: ':network')
+}
